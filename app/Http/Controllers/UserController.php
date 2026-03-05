@@ -6,14 +6,12 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         return response()->json(\App\Models\User::all());
     }
-//create user
+
     public function store(Request $request)
     {
         $validated = $request->validate([

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
+use Spatie\Permission\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -23,6 +24,15 @@ class RegisteredUserController extends Controller
             'email' => $validated['email'],
             'password' => $validated['password'],
         ]);
+
+        // Bootstrap: first registered user becomes admin (local/dev convenience).
+        if (User::count() === 1) {
+            $user->role = 'admin';
+            $user->save();
+
+            $adminRole = Role::firstOrCreate(['name' => 'admin']);
+            $user->assignRole($adminRole);
+        }
 
         Auth::login($user);
         $request->session()->regenerate();

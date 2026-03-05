@@ -7,12 +7,10 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        return response()->json(Category::all());
+        return response()->json(Category::where('is_active', true)->orderBy('name')->get());
     }
 
     public function store(Request $request)
