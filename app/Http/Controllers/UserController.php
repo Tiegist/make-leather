@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         return response()->json(\App\Models\User::all());
     }
-
+//create user
     public function store(Request $request)
     {
         $validated = $request->validate([
