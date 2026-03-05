@@ -15,7 +15,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || $request->user()->role !== 'admin') {
+        if (!$request->user() || !$request->user()->hasRole('admin')) {
             return response()->json(['message' => 'Forbidden: Admins only.'], 403);
         }
 

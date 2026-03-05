@@ -3,19 +3,17 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        User::updateOrCreate(
+        // Run roles and permissions first
+        $this->call(RoleAndPermissionSeeder::class);
+
+        // Create the default admin user
+        $admin = User::updateOrCreate(
             ['email' => 'admin@leather.com'],
             [
                 'name' => 'super admin',
@@ -25,5 +23,9 @@ class DatabaseSeeder extends Seeder
                 'address' => 'addis abeba',
             ]
         );
+
+        // Assign Spatie 'admin' role
+        $admin->assignRole('admin');
     }
 }
+
