@@ -7,6 +7,41 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Project setup (Laravel API + separate Vue frontend)
+
+This repository is configured as a **Laravel API backend** with **Sanctum SPA authentication** (cookies + CSRF) for a separate Vue.js frontend.
+
+### Backend setup
+
+- Copy env and install deps:
+
+```bash
+copy .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate
+```
+
+- Configure your Vue dev server origin (defaults are already in `.env.example`):
+  - `FRONTEND_URL` / `FRONTEND_URLS` (comma-separated)
+  - `SANCTUM_STATEFUL_DOMAINS`
+
+### Auth endpoints (JSON)
+
+- **CSRF cookie**: `GET /sanctum/csrf-cookie`
+- **Register**: `POST /api/register` `{ name, email, password, password_confirmation }`
+- **Login**: `POST /api/login` `{ email, password, remember? }`
+- **Current user**: `GET /api/me` (requires auth)
+- **Logout**: `POST /api/logout` (requires auth)
+- **Forgot password**: `POST /api/forgot-password` `{ email }`
+- **Reset password**: `POST /api/reset-password` `{ token, email, password, password_confirmation }`
+
+### Vue (axios) notes
+
+- Set axios to send cookies:
+  - `axios.defaults.withCredentials = true`
+- Before calling `POST /api/login` or `POST /api/register`, call `GET /sanctum/csrf-cookie` once per browser session.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
