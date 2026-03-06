@@ -16,10 +16,15 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        $isAdmin = $user && ($user->hasRole('admin') || $user->role === 'admin');
+        // Keep admin check simple and independent of Spatie tables
+        $isAdmin = $user && ($user->role === 'admin');
 
         if (! $isAdmin) {
-            return response()->json(['message' => 'Forbidden: Admins only.'], 403);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Forbidden: Admins only.'], 403);
+            }
+
+            abort(403, 'Forbidden: Admins only.');
         }
 
         return $next($request);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="theme()" x-init="init()" :class="{ 'dark': dark }">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,40 +14,32 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
         @php
             $user = Auth::user();
             $isAdmin = false;
             if ($user) {
-                $hasRoleAdmin = method_exists($user, 'hasRole') ? $user->hasRole('admin') : false;
                 $fieldAdmin = ($user->role ?? null) === 'admin';
                 $methodAdmin = method_exists($user, 'isAdmin') ? $user->isAdmin() : false;
 
-                $isAdmin = $hasRoleAdmin || $fieldAdmin || $methodAdmin;
+                $isAdmin = $fieldAdmin || $methodAdmin;
             }
         @endphp
 
         @if($isAdmin)
-            <div class="min-h-screen bg-gray-100 md:flex">
+            <div class="min-h-screen md:flex">
                 @include('layouts.admin-sidebar')
 
-                <div class="flex-1">
-                    <!-- Mobile fallback (keeps existing nav on small screens) -->
+                <div class="flex-1 min-w-0">
                     <div class="md:hidden">
                         @include('layouts.navigation')
                     </div>
 
-                    <!-- Page Heading -->
-                    @isset($header)
-                        <header class="bg-white shadow">
-                            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                                {{ $header }}
-                            </div>
-                        </header>
-                    @endisset
+                    <div class="hidden md:block">
+                        @include('layouts.admin-topbar')
+                    </div>
 
-                    <!-- Page Content -->
-                    <main>
+                    <main class="p-6 md:p-8">
                         {{ $slot }}
                     </main>
                 </div>
