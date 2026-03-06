@@ -11,7 +11,14 @@
 
     <x-auth-session-status class="mt-6" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}" class="mt-7 space-y-5">
+    <form
+        id="login-form"
+        method="POST"
+        action="{{ route('login') }}"
+        class="mt-7 space-y-5"
+        x-data="{ loading: false }"
+        x-on:submit="if (loading) return; loading = true"
+    >
         @csrf
 
         <div>
@@ -47,8 +54,38 @@
         <button
             type="submit"
             class="w-full inline-flex items-center justify-center rounded-xl bg-[#b07a3a] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_-18px_rgba(176,122,58,0.9)] hover:brightness-[1.03] active:brightness-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[rgba(176,122,58,0.32)] transition duration-200 ease-out"
+            :disabled="loading"
+            :class="{ 'opacity-80 cursor-not-allowed': loading }"
         >
-            {{ __('Log in') }}
+            <svg
+                x-show="loading"
+                class="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+            >
+                <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                ></circle>
+                <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+            </svg>
+
+            <span x-show="!loading">
+                {{ __('Log in') }}
+            </span>
+
+            <span x-show="loading" class="ml-2">
+                {{ __('Logging in...') }}
+            </span>
         </button>
     </form>
 </x-auth-split-layout>
