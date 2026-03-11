@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
+// Token auth (Bearer) and/or Sanctum SPA auth.
+// Keep these routes in the API group so they don't require CSRF tokens.
 Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth:sanctum');

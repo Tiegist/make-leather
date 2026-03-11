@@ -26,19 +26,30 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        $request->session()->regenerate();
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
+
+        $user = $request->user();
+        $token = $user?->createToken('api')?->plainTextToken;
 
         return response()->json([
-            'user' => $request->user(),
+            'user' => $user,
+            'token' => $token,
+            'token_type' => $token ? 'Bearer' : null,
         ]);
     }
 
     public function destroy(Request $request)
     {
+        $request->user()?->currentAccessToken()?->delete();
+
         Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        if ($request->hasSession()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return response()->noContent();
     }
