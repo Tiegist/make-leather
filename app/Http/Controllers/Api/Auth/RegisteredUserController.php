@@ -35,10 +35,16 @@ class RegisteredUserController extends Controller
         }
 
         Auth::login($user);
-        $request->session()->regenerate();
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
+
+        $token = $user->createToken('api')->plainTextToken;
 
         return response()->json([
             'user' => $user,
+            'token' => $token,
+            'token_type' => 'Bearer',
         ], 201);
     }
 }
